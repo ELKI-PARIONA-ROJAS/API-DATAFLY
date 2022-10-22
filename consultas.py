@@ -1,7 +1,11 @@
 import pymysql
+host = 'iu51mf0q32fkhfpl.cbetxkdyhwsb.us-east-1.rds.amazonaws.com'
+database = 'yv9v0x1jhaa2cz3v'
+user = 'onshtn8w8en5oyay'
+password = 'a6g8e1wccfbie7dv'
 
 def Pregunta1():
-    conexion = pymysql.connect (host='localhost', database='data_flight', user ='root', password='123')
+    conexion = pymysql.connect (host=host, database=database, user =user, password=password)
     cursor = conexion.cursor()
     cursor.execute(
         '''SELECT COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Puntuales en la salida'
@@ -13,7 +17,7 @@ def Pregunta1():
     return("Porcentaje de vuelos que han salido antes de los 15 min:"+' '+str(dato[0])+'%')
 
 def Pregunta2():
-    conexion = pymysql.connect (host='localhost', database='data_flight', user ='root', password='123')
+    conexion = pymysql.connect (host=host, database=database, user =user, password=password)
     cursor = conexion.cursor()
     cursor.execute(
         '''SELECT COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Puntuales en la llegada'
@@ -25,7 +29,7 @@ def Pregunta2():
     return("Porcentaje de vuelos que han llegado antes de los 15 min:"+' '+str(dato[0])+'%')
 
 def Pregunta3():
-    conexion = pymysql.connect (host='localhost', database='data_flight', user ='root', password='123')
+    conexion = pymysql.connect (host=host, database=database, user =user, password=password)
     cursor = conexion.cursor()
     cursor.execute(
         '''SELECT ID_Aeropuerto_O, AVG(Hora_SalidaR - Hora_SalidaP) AS 'Retraso'
@@ -45,7 +49,7 @@ def Pregunta3():
 
 
 def Pregunta4():
-    conexion = pymysql.connect (host='localhost', database='data_flight', user ='root', password='123')
+    conexion = pymysql.connect (host=host, database=database, user =user, password=password)
     cursor = conexion.cursor()
     cursor.execute(
         '''SELECT ID_Aeropuerto_D, AVG(Hora_LlegadaR - Hora_LlegadaP) AS 'Retraso'
@@ -65,7 +69,7 @@ def Pregunta4():
 
 
 def Pregunta5():
-    conexion = pymysql.connect (host='localhost', database='data_flight', user ='root', password='123')
+    conexion = pymysql.connect (host=host, database=database, user =user, password=password)
     cursor = conexion.cursor()
     cursor.execute(
         '''SELECT a.Aeropuerto, COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Porcentaje de aropuertos O'
@@ -88,7 +92,7 @@ def Pregunta5():
 
 
 def Pregunta6():
-    conexion = pymysql.connect (host='localhost', database='data_flight', user ='root', password='123')
+    conexion = pymysql.connect (host=host, database=database, user =user, password=password)
     cursor = conexion.cursor()
     cursor.execute(
         '''SELECT a.Aeropuerto, COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Porcentaje de aeropuertos D'
@@ -111,7 +115,7 @@ def Pregunta6():
 
 
 def Pregunta7():
-    conexion = pymysql.connect (host='localhost', database='data_flight', user ='root', password='123')
+    conexion = pymysql.connect (host=host, database=database, user =user, password=password)
     cursor = conexion.cursor()
     cursor.execute(
         '''SELECT a.Aerolinea, COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Porcentaje de aerolinea'
@@ -134,7 +138,7 @@ def Pregunta7():
 
 
 def query(query_):
-    conexion = pymysql.connect (host='localhost', database='data_flight', user ='root', password='123')
+    conexion = pymysql.connect (host=host, database=database, user =user, password=password)
     cursor = conexion.cursor()
     cursor.execute(query_)
     for dato in cursor:
