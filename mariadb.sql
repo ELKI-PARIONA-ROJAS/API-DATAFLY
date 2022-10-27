@@ -3,41 +3,48 @@ SELECT COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Puntuales en la salida'
 FROM vuelo
 WHERE (Hora_SalidaR - Hora_SalidaP) <= 15;
 
+
 -- Mostrar el porcentaje de vuelos que han llegado antes de los 15 minutos de la hora de llegada programada
 SELECT COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Puntuales en la llegada'
 FROM vuelo
 WHERE (Hora_LlegadaR - Hora_LlegadaP) <= 15;
 
 
--- Mostrar el promedio de espera al llegar, agrupado por Aeropuerto
+-- Los aeropuertos con mayores tiempos de retraso en la salida
 
-SELECT ID_Aeropuerto_O, AVG(Hora_SalidaR - Hora_SalidaP) AS 'Retraso'
-FROM vuelo
-WHERE ID_EstadoVuelo = 'E'
-GROUP BY ID_Aeropuerto_O
+SELECT a.Aeropuerto, AVG(v.Hora_SalidaR - v.Hora_SalidaP) AS 'Retraso'
+FROM vuelo AS v
+JOIN aeropuerto_o AS a
+ON v.ID_Aeropuerto_O = a.ID_Aeropuerto
+WHERE v.ID_EstadoVuelo = 'E'
+GROUP BY v.ID_Aeropuerto_O
+ORDER BY Retraso DESC
+LIMIT 10
+OFFSET 5;
+
+
+-- Los aeropuertos con menores tiempos de retraso en la partida
+
+SELECT a.Aeropuerto, AVG(v.Hora_SalidaR - v.Hora_SalidaP) AS 'Retraso'
+FROM vuelo AS v
+JOIN aeropuerto_o AS a
+ON v.ID_Aeropuerto_O = a.ID_Aeropuerto
+WHERE v.ID_EstadoVuelo = 'E'
+GROUP BY v.ID_Aeropuerto_O
 ORDER BY Retraso ASC
 LIMIT 10
-OFFSET 10;
-
--- Mostrar el promedio de espera al llegar, agrupado por Aeropuerto
-
-SELECT ID_Aeropuerto_D, AVG(Hora_LlegadaR - Hora_LlegadaP) AS 'Retraso'
-FROM vuelo
-WHERE ID_EstadoVuelo = 'E'
-GROUP BY ID_Aeropuerto_D
-ORDER BY Retraso ASC
-LIMIT 10
-OFFSET 10;
+OFFSET 5;
 
 
 -- Mostrar la regularidad por aeropuerto de salida
-SELECT a.Aeropuerto, COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Porcentaje de aropuertos O'
+SELECT a.Aeropuerto, COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Porcentaje de aeropuertos O'
 FROM vuelo as v
 JOIN aeropuerto_o as a
 ON v.ID_Aeropuerto_O = a.ID_Aeropuerto
 GROUP BY a.ID_Aeropuerto
 ORDER BY COUNT(*) DESC
 LIMIT 10;
+
 
 -- Mostrar la regularidad por aeropuerto de llegada
 SELECT a.Aeropuerto, COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Porcentaje de aeropuertos D'
@@ -49,7 +56,6 @@ ORDER BY COUNT(*) DESC
 LIMIT 10;
 
 
-
 -- Mostrar el procentaje de dominio de mercado por aerolinea
 SELECT a.Aerolinea, COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Porcentaje de aerolinea'
 FROM vuelo as v
@@ -58,3 +64,21 @@ ON v.ID_Aerolinea = a.ID_Aerolinea
 GROUP BY v.ID_Aerolinea
 ORDER BY COUNT(*) DESC
 LIMIT 10;
+
+
+-- Mostrar el porcentaje de vuelos por dia
+SELECT DAYNAME(Fecha) AS 'Dia', COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Porcentaje de vuelos'
+FROM vuelo
+GROUP BY DAYNAME(Fecha)
+ORDER BY COUNT(*) DESC;
+
+
+-- Mostrar el porcentaje de vuelos por mes
+SELECT MONTHNAME(Fecha) AS 'Mes', COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Porcentaje de vuelos'
+FROM vuelo
+GROUP BY MONTHNAME(Fecha)
+ORDER BY COUNT(*) DESC;
+
+
+
+

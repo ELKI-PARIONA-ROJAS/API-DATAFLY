@@ -32,18 +32,15 @@ def Pregunta3():
     conexion = pymysql.connect (host=host, database=database, user =user, password=password)
     cursor = conexion.cursor()
     cursor.execute(
-        '''SELECT ID_Aeropuerto_O, AVG(Hora_SalidaR - Hora_SalidaP) AS 'Retraso'
-        FROM vuelo
-        WHERE ID_EstadoVuelo = 'E'
-        GROUP BY ID_Aeropuerto_O
-        ORDER BY Retraso ASC
+        '''SELECT a.Aeropuerto, AVG(v.Hora_SalidaR - v.Hora_SalidaP) AS 'Retraso'
+        FROM vuelo AS v
+        JOIN aeropuerto_o AS a
+        ON v.ID_Aeropuerto_O = a.ID_Aeropuerto
+        WHERE v.ID_EstadoVuelo = 'E'
+        GROUP BY v.ID_Aeropuerto_O
+        ORDER BY Retraso DESC
         LIMIT 10
-        OFFSET 10;''')
-    # for dato in cursor:
-    #     pass
-    # conexion.close()
-    # return("Los 10 aeropuertos con mayor retraso en la salida de vuelos son:"+' '+str(dato[0]))
-    # Devolver todos los datos
+        OFFSET 5;''')
     conexion.close()
     return cursor.fetchall()
 
@@ -52,18 +49,15 @@ def Pregunta4():
     conexion = pymysql.connect (host=host, database=database, user =user, password=password)
     cursor = conexion.cursor()
     cursor.execute(
-        '''SELECT ID_Aeropuerto_D, AVG(Hora_LlegadaR - Hora_LlegadaP) AS 'Retraso'
-        FROM vuelo
-        WHERE ID_EstadoVuelo = 'E'
-        GROUP BY ID_Aeropuerto_D
+        '''SELECT a.Aeropuerto, AVG(v.Hora_SalidaR - v.Hora_SalidaP) AS 'Retraso'
+        FROM vuelo AS v
+        JOIN aeropuerto_o AS a
+        ON v.ID_Aeropuerto_O = a.ID_Aeropuerto
+        WHERE v.ID_EstadoVuelo = 'E'
+        GROUP BY v.ID_Aeropuerto_O
         ORDER BY Retraso ASC
         LIMIT 10
-        OFFSET 10;''')
-    # for dato in cursor:
-    #     pass
-    # conexion.close()
-    # return("Los 10 aeropuertos con mayor retraso en la llegada de vuelos son:"+' '+str(dato[0]))
-    # Devolver todos los datos
+        OFFSET 5;''')
     conexion.close()
     return cursor.fetchall()
 
@@ -79,11 +73,6 @@ def Pregunta5():
         GROUP BY a.ID_Aeropuerto
         ORDER BY COUNT(*) DESC
         LIMIT 10;''')
-    # for dato in cursor:
-    #     pass
-    # conexion.close()
-    # return("Porcentaje de vuelos que salen de los Aeropuertos:"+' '+str(dato[0]))
-    # return cursor.fetchall()
     salida = []
     for dato in cursor:
         salida.append(dato)
@@ -102,11 +91,6 @@ def Pregunta6():
         GROUP BY a.ID_Aeropuerto
         ORDER BY COUNT(*) DESC
         LIMIT 10;''')
-    # for dato in cursor:
-    #     pass
-    # conexion.close()
-    # return("Porcentaje de vuelos que llegan a los Aeropuertos:"+' '+str(dato[0]))
-    # return cursor.fetchall()
     salida = []
     for dato in cursor:
         salida.append(dato)
@@ -125,10 +109,6 @@ def Pregunta7():
         GROUP BY v.ID_Aerolinea
         ORDER BY COUNT(*) DESC
         LIMIT 10;''')
-    # for dato in cursor:
-    #     pass
-    # conexion.close()
-    # return("La aerolinea con mayores vuelos:"+' '+str(dato[0]))
     salida = []
     for dato in cursor:
         salida.append(dato)
@@ -136,11 +116,37 @@ def Pregunta7():
     return salida
 
 
+def Pregunta8():
+    conexion = pymysql.connect (host=host, database=database, user =user, password=password)
+    cursor = conexion.cursor()
+    cursor.execute(
+        '''SELECT DAYNAME(Fecha) AS 'Dia', COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Porcentaje de vuelos'
+        FROM vuelo
+        GROUP BY DAYNAME(Fecha)
+        ORDER BY COUNT(*) DESC;''')
+    salida = []
+    for dato in cursor:
+        salida.append(dato)
+    conexion.close()
+    return salida
+
+def Pregunta9():
+    conexion = pymysql.connect (host=host, database=database, user =user, password=password)
+    cursor = conexion.cursor()
+    cursor.execute(
+        '''SELECT MONTHNAME(Fecha) AS 'Mes', COUNT(*)*100/(SELECT COUNT(*) FROM vuelo) AS 'Porcentaje de vuelos'
+        FROM vuelo
+        GROUP BY MONTHNAME(Fecha)
+        ORDER BY COUNT(*) DESC;''')
+    salida = []
+    for dato in cursor:
+        salida.append(dato)
+    conexion.close()
+    return salida
 
 def query(query_):
     conexion = pymysql.connect (host=host, database=database, user =user, password=password)
     cursor = conexion.cursor()
     cursor.execute(query_)
-    for dato in cursor:
-        salida = dato
-    return (salida)
+    conexion.close()
+    return cursor.fetchall()
